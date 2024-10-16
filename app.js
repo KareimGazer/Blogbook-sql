@@ -22,9 +22,7 @@ const { handleNotFoundError } = require('./middleware/error/notFoundError')
 app.use(cors())
 app.use(express.json())
 
-if (NODE_ENV === 'development') {
-    app.use(requestLogger)
-}
+if (NODE_ENV === 'development') app.use(requestLogger)
 
 app.use('/api/blogs', blogsRouter)
 
