@@ -19,8 +19,7 @@ router.get('/', async (req, res) => {
 })
 
 router.get('/:id', blogFinder, async (req, res) => {
-    const blog = req.blog
-    res.status(200).json(blog)
+    res.status(200).json(req.blog)
 })
 
 router.post('/', async (req, res) => {
@@ -33,14 +32,26 @@ router.post('/', async (req, res) => {
 })
 
 // beware the likes should not be updated
-router.put('/:id', async (req, res) => {
-    const blog = req.body
-    await blog.update(req.body)
+router.put('/:id', blogFinder, async (req, res) => {
+    const blog = req.blog
+    const newBlog = {
+        ...req.body,
+        likes: blog.likes
+    }
+    const updatedBlog = await blog.update(newBlog)
+    res.status(200).json(updatedBlog)
+})
+
+// like / dislike a blog
+// TODO: see if the user likes it or not and reverse the state and increment or decrement accordingly
+router.put('/:id/like', blogFinder, async (req, res) => {
+    const blog = req.blog
+    await blog.update({ likes: blog.likes + 1 })
     res.status(200).json(blog)
 })
 
-router.delete('/:id', async (req, res) => {
-    const blog = req.body
+router.delete('/:id', blogFinder, async (req, res) => {
+    const blog = req.blog
     await blog.destroy()
     res.status(204).end()
 })
