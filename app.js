@@ -7,25 +7,36 @@ const app = express()
 const cors = require('cors')
 
 const blogsRouter = require('./controllers/blogs')
-const middleware = require('./utils/middleware')
+const {
+    databaseErrorHandler,
+    connectionErrorHandler,
+    timeoutErrorHandler,
+    validationErrorHandler,
+    castErrorHandler,
+    permissionErrorHandler
+} = require('./middleware/error/sequelizeErrors')
+const {javaScriptErrorsHandler, systemErrorsHandler, genericErrorsHandler} = require('./middleware/error/genericErrors')
+const { handleNotFoundError } = require('./middleware/error/notFoundError')
+
 
 app.use(cors())
 app.use(express.json())
 
-if (NODE_ENV !== 'test') {
-    app.use(middleware.requestLogger)
+if (NODE_ENV === 'development') {
+    app.use(requestLogger)
 }
 
 app.use('/api/blogs', blogsRouter)
 
-app.use(middleware.castErrorHandler)
-app.use(middleware.validationErrorHandler)
-app.use(middleware.duplicateKeyErrorHandler)
-app.use(middleware.JsonWebTokenErrorHandler)
-app.use(middleware.TokenExpiredErrorHandler)
-app.use(middleware.unknownEndPoint)
-
+app.use(databaseErrorHandler)
+app.use(connectionErrorHandler)
+app.use(timeoutErrorHandler)
+app.use(validationErrorHandler)
+app.use(castErrorHandler)
+app.use(permissionErrorHandler)
+app.use(javaScriptErrorsHandler)
+app.use(systemErrorsHandler)
+app.use(genericErrorsHandler)
+app.use(handleNotFoundError)
 
 module.exports = app
-
-
