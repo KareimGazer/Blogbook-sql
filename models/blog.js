@@ -1,4 +1,4 @@
-const { DATABASE_URL } = require('./utils/config')
+const { DATABASE_URL } = require('../utils/config')
 const { Sequelize, Model, DataTypes } = require('sequelize')
 const sequelize = new Sequelize(DATABASE_URL, {dialect: 'postgres'})
 

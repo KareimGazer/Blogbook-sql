@@ -93,7 +93,7 @@ module.exports = {
     duplicateKeyErrorHandler,
     JsonWebTokenErrorHandler,
     TokenExpiredErrorHandler,
-    tokenExtractor,
-    userExtractor,
+    // tokenExtractor,
+    // userExtractor,
     unknownEndPoint
 }

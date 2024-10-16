@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router()
-const { Blog } = require('../models/blog')
+const Blog = require('../models/blog')
 
-router.get('/api/blogs', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const blogs = await Blog.findAll()
         res.status(200).json(blogs)
@@ -13,7 +13,7 @@ router.get('/api/blogs', async (req, res) => {
     }
 })
 
-router.get('/api/blogs/:id', async (req, res) => {
+router.get('/:id', async (req, res) => {
     try {
         const blog = await Blog.findByPk(req.params.id)
         if (blog) {
@@ -28,7 +28,7 @@ router.get('/api/blogs/:id', async (req, res) => {
     }
 })
 
-router.post('/api/blogs', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const blog = await Blog.create(req.body)
         res.status(201).json(blog)
@@ -42,7 +42,7 @@ router.post('/api/blogs', async (req, res) => {
 })
 
 // beware the likes should not be updated
-router.put('/api/blogs/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
     try {
         const blog = await Blog.findByPk(req.params.id)
         if (blog) {
@@ -58,7 +58,7 @@ router.put('/api/blogs/:id', async (req, res) => {
     }
 })
 
-router.delete('/api/blogs/:id', async (req, res) => {
+router.delete('/:id', async (req, res) => {
     try {
         const blog = await Blog.findByPk(req.params.id)
         if (blog) {

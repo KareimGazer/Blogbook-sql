@@ -1,4 +1,5 @@
 const { NODE_ENV, DATABASE_URL } = require('./utils/config')
+const { Sequelize} = require('sequelize')
 
 const express = require('express')
 require('express-async-errors')
@@ -10,7 +11,7 @@ const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
 
 const logger = require('./utils/logger')
-logger.info('Mongo DB: Connecting to', DATABASE_URL)
+logger.info('PostgreSQL DB: Connecting to', DATABASE_URL)
 
 app.use(cors())
 app.use(express.json())
