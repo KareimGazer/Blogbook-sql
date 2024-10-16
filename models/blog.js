@@ -1,6 +1,5 @@
-const { DATABASE_URL } = require('../utils/config')
-const { Sequelize, Model, DataTypes } = require('sequelize')
-const sequelize = new Sequelize(DATABASE_URL, {dialect: 'postgres'})
+const { Model, DataTypes } = require('sequelize')
+const { sequelize } = require('../utils/db')
 
 class Blog extends Model {}
 Blog.init({

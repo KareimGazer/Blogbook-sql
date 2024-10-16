@@ -1,77 +1,48 @@
-const express = require('express')
-const router = express.Router()
-const Blog = require('../models/blog')
+const router = require('express').Router()
+const { Blog } = require('../models')
+
+const blogFinder = async (req, res, next) => {
+    const blog = await Blog.findByPk(req.params.id)
+    if (!blog) {
+        throw new Error('NotFoundError')
+    }
+    else {
+        req.blog = blog
+    }
+    next()
+}
 
 router.get('/', async (req, res) => {
-    try {
-        const blogs = await Blog.findAll()
-        res.status(200).json(blogs)
-        // console.log(JSON.stringify(blogs, null, 2))
-    }
-    catch (error) {
-        return res.status(400).json({ error })
-    }
+    const blogs = await Blog.findAll()
+    res.status(200).json(blogs)
+    // console.log(JSON.stringify(blogs, null, 2))
 })
 
-router.get('/:id', async (req, res) => {
-    try {
-        const blog = await Blog.findByPk(req.params.id)
-        if (blog) {
-            res.status(200).json(blog)
-        }
-        else {
-            res.status(404).end()
-        }
-    }
-    catch (error) {
-        return res.status(400).json({ error })
-    }
+router.get('/:id', blogFinder, async (req, res) => {
+    const blog = req.blog
+    res.status(200).json(blog)
 })
 
 router.post('/', async (req, res) => {
-    try {
-        const blog = await Blog.create(req.body)
-        res.status(201).json(blog)
-        // const blog = Blog.build(req.body)
-        // blog.important = true
-        // await blog.save()
-    }
-    catch (error) {
-        return res.status(400).json({ error })
-    }
+    const blog = await Blog.create(req.body)
+    res.status(201).json(blog)
+    // const blog = Blog.build(req.body)
+    // blog.important = true
+    // await blog.save()
+
 })
 
 // beware the likes should not be updated
 router.put('/:id', async (req, res) => {
-    try {
-        const blog = await Blog.findByPk(req.params.id)
-        if (blog) {
-            await blog.update(req.body)
-            res.status(200).json(blog)
-        }
-        else {
-            res.status(404).end()
-        }
-    }
-    catch (error) {
-        return res.status(400).json({ error })
-    }
+    const blog = req.body
+    await blog.update(req.body)
+    res.status(200).json(blog)
 })
 
 router.delete('/:id', async (req, res) => {
-    try {
-        const blog = await Blog.findByPk(req.params.id)
-        if (blog) {
-            await blog.destroy()
-            res.status(204).end()
-        }
-        else {
-            res.status(404).end()
-        }
-    }
-    catch (error) {
-        return res.status(400).json({ error })
-    }
+    const blog = req.body
+    await blog.destroy()
+    res.status(204).end()
 })
 
 module.exports = router

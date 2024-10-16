@@ -1,5 +1,4 @@
-const { NODE_ENV, DATABASE_URL } = require('./utils/config')
-const { Sequelize} = require('sequelize')
+const { NODE_ENV } = require('./utils/config')
 
 const express = require('express')
 require('express-async-errors')
@@ -9,9 +8,6 @@ const cors = require('cors')
 
 const blogsRouter = require('./controllers/blogs')
 const middleware = require('./utils/middleware')
-
-const logger = require('./utils/logger')
-logger.info('PostgreSQL DB: Connecting to', DATABASE_URL)
 
 app.use(cors())
 app.use(express.json())

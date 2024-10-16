@@ -6,37 +6,6 @@ const morgan = require("morgan")
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 const requestLogger = morgan(':method :url :status :res[content-length] - :response-time ms :body')
 
-// const tokenExtractor = (request, response, next) => {
-//     let authorization = request.get('authorization')
-//     if (authorization) {
-//         // Remove surrounding quotes if present
-//         if (authorization.startsWith('"') && authorization.endsWith('"')) {
-//             authorization = authorization.slice(1, -1)
-//         }
-//         // Trim any whitespace
-//         const trimmedAuth = authorization.trim()
-//         if (trimmedAuth.toLowerCase().startsWith('bearer ')) {
-//             request.token = trimmedAuth.substring(7).trim()
-//         } else {
-//             request.token = null
-//         }
-//     } else {
-//         request.token = null
-//     }
-
-//     next()
-// }
-
-// const userExtractor = (request, response, next) => {
-//     const { token } = request
-//     const decodedToken = jwt.verify(token, JWT_SECRET)
-//     if (!decodedToken.id) {
-//         return res.status(401).json({ error: 'token invalid' })
-//     }
-//     request.userInfo = decodedToken
-//     next()
-// }
-
 const castErrorHandler = (error, request, response, next) => {
     logger.error(error.message)
     if (error.name === 'CastError') {
