@@ -1,13 +1,7 @@
 const { PORT } = require('./utils/config')
-
-const express = require('express')
-const app = express()
-app.use(express.json())
-
-
-
-
+const app = require('./app')
+const logger = require('./utils/logger')
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+    logger.log(`Server running on port ${PORT}`)
 })
