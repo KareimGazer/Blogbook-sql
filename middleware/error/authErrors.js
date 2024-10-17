@@ -49,11 +49,20 @@ const InvalidUserErrorHandler = (error, request, response, next) => {
     next(error)
 }
 
+const NotAuthorizedErrorHandler = (error, request, response, next) => {
+    logger.error(err.message);
+    if (error.name === 'NotAuthorizedError') {
+        return response.status(401).send({ error: 'Not Authorized' })
+    }
+    next(err);
+};
+
 module.exports = {
     JsonWebTokenErrorHandler,
     TokenInvalidErrorHandler,
     UserTokenMissingErrorHandler,
     weekPasswordErrorHandler,
     TokenExpiredErrorHandler,
-    InvalidUserErrorHandler
+    InvalidUserErrorHandler,
+    NotAuthorizedErrorHandler
 }

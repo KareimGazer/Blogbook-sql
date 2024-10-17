@@ -2,6 +2,8 @@ const router = require('express').Router()
 const bcrypt = require('bcrypt')
 const { User, Blog } = require('../models')
 const { isStrongPassword } = require('../utils/auth_helper')
+const { userExtractorHandler } = require('../middleware/auth/authenticate')
+const { ROOT_USERNAME } = require('../utils/config')
 
 const extractUser = async (req, res, next) => {
     const { username } = req.params
@@ -16,13 +18,20 @@ const extractUser = async (req, res, next) => {
 
 router.get('/', async (req, res) => {
     const users = await User.findAll({
-        include: { model: Blog }
+        attributes: { exclude: ['id', 'passwordHash', 'createdAt', 'updatedAt'] },
+        include: { model: Blog, attributes: ['title', 'author', 'url', 'likes', 'date'] }
     })
     res.status(200).json(users)
 })
 
-router.get('/:username', extractUser, async (req, res) => {
-    res.status(200).json(req.user)
+router.get('/:username', async (req, res) => {
+    //const user = await User.findOne({ where: { username: req.params.username } })
+    const user = await User.findOne({
+        where: { username: req.params.username },
+        include: { model: Blog, attributes: ['title', 'author', 'url', 'likes', 'date'] },
+        attributes: { exclude: ['id', 'passwordHash', 'createdAt', 'updatedAt'] }
+    })
+    res.status(200).json(user)
 })
 
 // register
@@ -39,7 +48,7 @@ router.post('/', async (request, response) => {
     response.status(201).json(savedUser)
 })
 
-// validation needed?
+// validation needed? gaurd against password hash
 // authorization needed
 router.put('/:username', extractUser, async (req, res) => {
     const user = req.user
@@ -48,7 +57,11 @@ router.put('/:username', extractUser, async (req, res) => {
 })
 
 // authorization needed
-router.delete('/:username', extractUser, async (req, res) => {
+router.delete('/:username', extractUser, userExtractorHandler, async (req, res) => {
+    const userTobeDeleted = req.user.username
+    if (userTobeDeleted !== req.userData.username && req.userData.username !== ROOT_USERNAME) {
+        throw new Error('NotAuthorizedError')
+    }
     const user = req.user
     await user.destroy()
     res.status(204).end()

@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const { Blog } = require('../models')
+const { Blog, User } = require('../models')
 const { userExtractorHandler } = require('../middleware/auth/authenticate')
 
 const blogFinder = async (req, res, next) => {
@@ -14,7 +14,14 @@ const blogFinder = async (req, res, next) => {
 }
 
 router.get('/', async (req, res) => {
-    const blogs = await Blog.findAll()
+    const blogs = await Blog.findAll({
+        order: [['date', 'DESC']],
+        //attributes: ['id', 'title', 'author', 'url', 'likes', 'date'],
+        attributes: {
+            exclude: ['userId']
+        },
+        include: { model: User, attributes: ['username', 'name', 'image'] }
+    })
     res.status(200).json(blogs)
     // console.log(JSON.stringify(blogs, null, 2))
 })
