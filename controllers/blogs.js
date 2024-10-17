@@ -36,7 +36,7 @@ router.post('/', userExtractorHandler, async (req, res) => {
     res.status(201).json(savedBlog)
 })
 
-// beware the likes should not be updated
+// beware the likes should not be updated nor the date created
 router.put('/:id', blogFinder, async (req, res) => {
     const blog = req.blog
     const newBlog = {

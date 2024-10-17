@@ -27,7 +27,7 @@ const timeoutErrorHandler = (err, req, res, next) => {
 const validationErrorHandler = (err, req, res, next) => {
     if (err.name === 'SequelizeValidationError' || err.name === 'SequelizeInvalidParameterError') {
         logger.error(err.message);
-        return res.status(400).json({ message: 'Invalid request data.', errors: err.errors });
+        return res.status(400).json({ message: 'Invalid request data.' });
     }
     next(err);
 };

@@ -13,11 +13,23 @@ Blog.init({
         allowNull: false
     },
     author: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        validate: {
+            isAlpha: {
+                args: true,
+                msg: 'Only letters are allowed for author name'
+            }
+        }
     },
     url: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isUrl: {
+                args: true,
+                msg: 'Not a valid url'
+            }
+        }
     },
     description: {
         type: DataTypes.TEXT
@@ -27,7 +39,8 @@ Blog.init({
         defaultValue: 0
     },
     date: {
-        type: DataTypes.DATE
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW
     }
     }, {
     sequelize,

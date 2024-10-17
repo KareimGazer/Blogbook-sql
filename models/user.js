@@ -16,7 +16,13 @@ User.init({
     username: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isAlphanumeric: {
+                args: true,
+                msg: 'Only letters and numbers are allowed for username'
+            }
+        }
     },
     name: {
         type: DataTypes.STRING,
@@ -25,7 +31,13 @@ User.init({
     email: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isEmail: {
+                args: true,
+                msg: 'Not a valid email'
+            }
+        }
     },
     passwordHash: {
         type: DataTypes.STRING,
@@ -35,7 +47,10 @@ User.init({
         type: DataTypes.TEXT
     },
     image: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        validate: {
+            isUrl: true
+        }
     }
 }, {
     sequelize,
