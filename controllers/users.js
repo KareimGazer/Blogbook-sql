@@ -48,14 +48,16 @@ router.post('/', async (request, response) => {
     response.status(201).json(savedUser)
 })
 
-// validation needed? gaurd against password hash
 router.put('/:username', extractUser, userExtractorHandler, async (req, res) => {
     const userTobeModified = req.user.username
     if (userTobeModified !== req.userData.username && req.userData.username !== ROOT_USERNAME) {
         throw new Error('NotAuthorizedError')
     }
     const user = req.user
-    const updatedUser = await user.update(req.body)
+    // update except the password hash
+    const updatedUser = await user.update({ ...req.body, passwordHash: user.passwordHash })
+    // remove the password hash
+    delete updatedUser.dataValues.passwordHash
     res.status(200).json(updatedUser)
 })
 
