@@ -18,7 +18,6 @@ const tokenExtractorHandler = (request, response, next) => {
     } else {
         request.token =  null // may throw an execption when decoded
     }
-
     next()
 }
 

@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const { Blog } = require('../models')
+const { userExtractorHandler } = require('../middleware/auth/authenticate')
 
 const blogFinder = async (req, res, next) => {
     const blog = await Blog.findByPk(req.params.id)
@@ -22,13 +23,10 @@ router.get('/:id', blogFinder, async (req, res) => {
     res.status(200).json(req.blog)
 })
 
-router.post('/', async (req, res) => {
-    const blog = await Blog.create(req.body)
-    res.status(201).json(blog)
-    // const blog = Blog.build(req.body)
-    // blog.important = true
-    // await blog.save()
-
+router.post('/', userExtractorHandler, async (req, res) => {
+    const user = req.userData
+    const savedBlog = await Blog.create({...req.body, userId: user.id, date: new Date()})
+    res.status(201).json(savedBlog)
 })
 
 // beware the likes should not be updated

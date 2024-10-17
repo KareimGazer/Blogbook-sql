@@ -25,8 +25,8 @@ app.use(express.json())
 
 if (NODE_ENV === 'development') app.use(requestLogger)
 
-app.use('/api/blogs', blogsRouter)
-app.use('/api/users', usersRouter)
+app.use('/api/blogs', handelAuthentication.tokenExtractorHandler, blogsRouter)
+app.use('/api/users', handelAuthentication.tokenExtractorHandler, usersRouter)
 app.use('/api/login', loginRouter)
 
 // error handling

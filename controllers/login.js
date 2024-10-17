@@ -13,7 +13,7 @@ loginRouter.post('/', async (request, response) => {
 
     if (isPasswordCorrect) {
         // only one could suffice but handy for conversion if you need user friendly interface/api
-        const userDataPayload = {username: user.username, id: user._id.toString(),}
+        const userDataPayload = {username: user.username, id: user.id}
         const token = jwt.sign(userDataPayload, JWT_SECRET, { expiresIn: "1h" })
         response.status(200).send({ token, username: user.username, name: user.name })
     } else {

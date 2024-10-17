@@ -31,7 +31,6 @@ router.post('/', async (request, response) => {
     if (!isStrongPassword(password)) {
         throw new Error('WeekPasswordError')
     }
-
     const saltRounds = 10
     const passwordHash = await bcrypt.hash(password, saltRounds)
 
