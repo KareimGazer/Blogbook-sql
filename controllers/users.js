@@ -49,14 +49,16 @@ router.post('/', async (request, response) => {
 })
 
 // validation needed? gaurd against password hash
-// authorization needed
-router.put('/:username', extractUser, async (req, res) => {
+router.put('/:username', extractUser, userExtractorHandler, async (req, res) => {
+    const userTobeModified = req.user.username
+    if (userTobeModified !== req.userData.username && req.userData.username !== ROOT_USERNAME) {
+        throw new Error('NotAuthorizedError')
+    }
     const user = req.user
     const updatedUser = await user.update(req.body)
     res.status(200).json(updatedUser)
 })
 
-// authorization needed
 router.delete('/:username', extractUser, userExtractorHandler, async (req, res) => {
     const userTobeDeleted = req.user.username
     if (userTobeDeleted !== req.userData.username && req.userData.username !== ROOT_USERNAME) {
