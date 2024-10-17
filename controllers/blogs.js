@@ -4,7 +4,7 @@ const { Blog } = require('../models')
 const blogFinder = async (req, res, next) => {
     const blog = await Blog.findByPk(req.params.id)
     if (!blog) {
-        throw new Error('NotFoundError')
+        throw new Error('BlogNotFoundError')
     }
     else {
         req.blog = blog

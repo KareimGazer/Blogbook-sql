@@ -7,16 +7,17 @@ const app = express()
 const cors = require('cors')
 
 const blogsRouter = require('./controllers/blogs')
+const usersRouter = require('./controllers/users')
+const loginRouter = require('./controllers/login')
+
 const {
-    databaseErrorHandler,
-    connectionErrorHandler,
-    timeoutErrorHandler,
-    validationErrorHandler,
-    castErrorHandler,
-    permissionErrorHandler
-} = require('./middleware/error/sequelizeErrors')
-const {javaScriptErrorsHandler, systemErrorsHandler, genericErrorsHandler} = require('./middleware/error/genericErrors')
-const { handleNotFoundError } = require('./middleware/error/notFoundError')
+    handleSequelizeErrors,
+    handleGenericErrors,
+    handleNotFoundErrors,
+    haddleAuthErrors,
+    handelAuthentication,
+    requestLogger,
+} = require('./middleware')
 
 
 app.use(cors())
@@ -25,16 +26,30 @@ app.use(express.json())
 if (NODE_ENV === 'development') app.use(requestLogger)
 
 app.use('/api/blogs', blogsRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/login', loginRouter)
 
-app.use(databaseErrorHandler)
-app.use(connectionErrorHandler)
-app.use(timeoutErrorHandler)
-app.use(validationErrorHandler)
-app.use(castErrorHandler)
-app.use(permissionErrorHandler)
-app.use(javaScriptErrorsHandler)
-app.use(systemErrorsHandler)
-app.use(genericErrorsHandler)
-app.use(handleNotFoundError)
+// error handling
+app.use(haddleAuthErrors.JsonWebTokenErrorHandler)
+app.use(haddleAuthErrors.TokenExpiredErrorHandler)
+app.use(haddleAuthErrors.TokenInvalidErrorHandler)
+app.use(haddleAuthErrors.UserTokenMissingErrorHandler)
+app.use(haddleAuthErrors.weekPasswordErrorHandler)
+app.use(haddleAuthErrors.InvalidUserErrorHandler)
+
+app.use(handleSequelizeErrors.databaseErrorHandler)
+app.use(handleSequelizeErrors.castErrorHandler)
+app.use(handleSequelizeErrors.connectionErrorHandler)
+app.use(handleSequelizeErrors.validationErrorHandler)
+app.use(handleSequelizeErrors.permissionErrorHandler)
+app.use(handleSequelizeErrors.timeoutErrorHandler)
+
+app.use(handleGenericErrors.javaScriptErrorsHandler)
+app.use(handleGenericErrors.systemErrorsHandler)
+app.use(handleGenericErrors.genericErrorsHandler)
+
+app.use(handleNotFoundErrors.handleUserNotFoundError)
+app.use(handleNotFoundErrors.handleBlogNotFoundError)
+app.use(handleNotFoundErrors.handleNotFoundError)
 
 module.exports = app
