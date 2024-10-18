@@ -42,14 +42,16 @@ const logger = createLogger({
 });
 
 // Log to console in development
-if (process.env.NODE_ENV !== 'production') {
+if (NODE_ENV === 'development') {
     logger.add(new transports.Console({
         format: combine(
             colorize(),  // Colorize the output for console
             timestamp(),
             logFormat
         ),
-        level: 'debug'  // Log everything down to debug level in development
+        level: 'debug',  // Log everything down to debug level in development
+        stderrLevels: ['error'],  // Ensure 'error' level logs are shown on stderr
+        handleExceptions: true  // Handle uncaught exceptions
     }));
 }
 

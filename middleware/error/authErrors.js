@@ -50,11 +50,11 @@ const InvalidUserErrorHandler = (error, request, response, next) => {
 }
 
 const NotAuthorizedErrorHandler = (error, request, response, next) => {
-    logger.error(err.message);
+    logger.error(error.message);
     if (error.name === 'NotAuthorizedError') {
         return response.status(401).send({ error: 'Not Authorized' })
     }
-    next(err);
+    next(error);
 };
 
 module.exports = {
