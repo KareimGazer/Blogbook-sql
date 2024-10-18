@@ -7,22 +7,30 @@ const sequelize = new Sequelize(DATABASE_URL, { dialect: 'postgres' })
 
 // The runMigrations function that performs migrations is now executed every time the application
 // opens a database connection when it starts.
-// Sequelize keeps track of which migrations have already been completed, 
+// Sequelize keeps track of which migrations have already been completed,
 // so if there are no new migrations, running the runMigrations function does nothing.
-const runMigrations = async () => {
-    const migrator = new Umzug({
-        migrations: {
+
+const migrationConf = {
+    migrations: {
         glob: 'migrations/*.js',
-        },
-        storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
-        context: sequelize.getQueryInterface(),
-        logger: console, // logger: logger
-    })
-    
+    },
+    storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
+    context: sequelize.getQueryInterface(),
+    logger // logger: logger
+}
+
+const runMigrations = async () => {
+    const migrator = new Umzug(migrationConf)
     const migrations = await migrator.up()
     logger.info('Migrations up to date', {
         files: migrations.map((mig) => mig.name),
     })
+}
+
+const rollbackMigration = async () => {
+    await sequelize.authenticate()
+    const migrator = new Umzug(migrationConf)
+    await migrator.down()
 }
 
 const connectToDatabase = async () => {
@@ -38,4 +46,4 @@ const connectToDatabase = async () => {
     return null
 }
 
-module.exports = { connectToDatabase, sequelize }
+module.exports = { connectToDatabase, sequelize, rollbackMigration }

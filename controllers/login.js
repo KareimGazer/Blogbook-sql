@@ -11,6 +11,10 @@ loginRouter.post('/', async (request, response) => {
     const user = await User.findOne({where: {username}})
     const isPasswordCorrect = user && await bcrypt.compare(password, user.passwordHash)
 
+    if (user.disabled) {
+        throw new Error('AccountDisabled')
+    }
+
     if (isPasswordCorrect) {
         // only one could suffice but handy for conversion if you need user friendly interface/api
         const userDataPayload = {username: user.username, id: user.id}

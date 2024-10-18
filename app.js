@@ -39,6 +39,7 @@ app.use(haddleAuthErrors.UserTokenMissingErrorHandler)
 app.use(haddleAuthErrors.weekPasswordErrorHandler)
 app.use(haddleAuthErrors.InvalidUserErrorHandler)
 app.use(haddleAuthErrors.NotAuthorizedErrorHandler)
+app.use(haddleAuthErrors.disabledUserErrorHandler)
 
 app.use(handleSequelizeErrors.databaseErrorHandler)
 app.use(handleSequelizeErrors.castErrorHandler)

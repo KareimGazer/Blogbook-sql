@@ -57,6 +57,14 @@ const NotAuthorizedErrorHandler = (error, request, response, next) => {
     next(error);
 };
 
+const disabledUserErrorHandler = (error, request, response, next) => {
+    logger.error(error.message);
+    if (error.name === 'AccountDisabled') {
+        return response.status(401).send({ error: 'Account disabled, please contact admin' })
+    }
+    next(error);
+};
+
 module.exports = {
     JsonWebTokenErrorHandler,
     TokenInvalidErrorHandler,
@@ -64,5 +72,6 @@ module.exports = {
     weekPasswordErrorHandler,
     TokenExpiredErrorHandler,
     InvalidUserErrorHandler,
-    NotAuthorizedErrorHandler
+    NotAuthorizedErrorHandler,
+    disabledUserErrorHandler
 }
