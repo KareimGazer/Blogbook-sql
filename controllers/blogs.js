@@ -14,13 +14,21 @@ const blogFinder = async (req, res, next) => {
 }
 
 router.get('/', async (req, res) => {
+    const { search } = req.query;
+    const searchCondition = search ? {
+        [Op.or]: [
+            { title: { [Op.iLike]: `%${search}%` } },  // Case-insensitive search in the title field
+            { author: { [Op.iLike]: `%${search}%` } }  // Case-insensitive search in the author field
+        ]
+    } : {};
+
     const blogs = await Blog.findAll({
         order: [['date', 'DESC']],
-        //attributes: ['id', 'title', 'author', 'url', 'likes', 'date'],
         attributes: {
             exclude: ['userId']
         },
-        include: { model: User, attributes: ['username', 'name', 'image'] }
+        include: { model: User, attributes: ['username', 'name', 'image'] },
+        where: searchCondition
     })
     res.status(200).json(blogs)
     // console.log(JSON.stringify(blogs, null, 2))
