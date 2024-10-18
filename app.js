@@ -9,6 +9,7 @@ const cors = require('cors')
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
+const authorsRouter = require('./controllers/authors')
 
 const {
     handleSequelizeErrors,
@@ -27,6 +28,7 @@ if (NODE_ENV === 'development') app.use(requestLogger)
 
 app.use('/api/blogs', handelAuthentication.tokenExtractorHandler, blogsRouter)
 app.use('/api/users', handelAuthentication.tokenExtractorHandler, usersRouter)
+app.use('/api/authors', authorsRouter)
 app.use('/api/login', loginRouter)
 
 // error handling
